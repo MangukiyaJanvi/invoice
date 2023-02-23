@@ -5,6 +5,7 @@ import 'package:invoice/second.dart';
 import 'home.dart';
 
 List<Model> l1=[];
+int sum=0;
 void main()
 {
   runApp(
