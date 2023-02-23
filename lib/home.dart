@@ -368,7 +368,7 @@ class _HomeState extends State<Home> {
                           Navigator.pop(context);
                         });
                       },
-                      child: Text("Add"),
+                      child: Text("Edit"),
                     ),
                   ],
                 ),
