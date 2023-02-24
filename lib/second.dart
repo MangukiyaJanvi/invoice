@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:invoice/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +17,11 @@ class Second extends StatefulWidget {
 }
 
 class _SecondState extends State<Second> {
-
   final GlobalKey genKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    ModelData list =
-        ModalRoute.of(context)!.settings.arguments as ModelData;
+    ModelData list = ModalRoute.of(context)!.settings.arguments as ModelData;
     return SafeArea(
       child: Scaffold(
         body: Center(
@@ -36,13 +35,15 @@ class _SecondState extends State<Second> {
                     children: [
                       Text(
                         "D-Mart",
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       Text(
                           "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"),
                       Text(
                         "AVENUE SUPERMARTS LTD",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(
                           "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"),
@@ -62,7 +63,8 @@ class _SecondState extends State<Second> {
                           "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"),
                       Text(
                         "DMART MOTERA",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "City Gold Multiplex Compound.",
@@ -88,8 +90,8 @@ class _SecondState extends State<Second> {
                           ),
                           Text(
                             "Phone: 079-30936500",
-                            style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 12),
@@ -105,11 +107,21 @@ class _SecondState extends State<Second> {
                           "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"),
                       Text(
                         "TAX INVOICE",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      Text("Customer Name : ${list.m1?.cname}",style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text("Customer Address : ${list.m1?.cadd}",style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text("Customer Contact Number : ${list.m1?.ccall}",style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(
+                        "Customer Name : ${list.m1?.cname}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "Customer Address : ${list.m1?.cadd}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "Customer Contact Number : ${list.m1?.ccall}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                           "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"),
                       Row(
@@ -131,8 +143,9 @@ class _SecondState extends State<Second> {
                       Expanded(
                         child: ListView.builder(
                           itemCount: list.productList.length,
-                          itemBuilder: (context, index) =>
-                              Box(list.productList[index].name!, list.productList[index].price!),
+                          itemBuilder: (context, index) => Box(
+                              list.productList[index].name!,
+                              list.productList[index].price!),
                         ),
                       ),
                       Text(
@@ -141,7 +154,8 @@ class _SecondState extends State<Second> {
                         children: [
                           Expanded(
                             child: Container(
-                              child: Text("TOTAL ITEMS : ${list.productList.length}"),
+                              child: Text(
+                                  "TOTAL ITEMS : ${list.productList.length}"),
                             ),
                           ),
                           Expanded(
@@ -159,25 +173,30 @@ class _SecondState extends State<Second> {
               ),
               Align(
                   alignment: Alignment.bottomCenter,
-                  child: ElevatedButton(onPressed: () async {
-                    await takePicture();
-                  }, child: Text("Save Image"),)),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await takePicture();
+                    },
+                    child: Text("Save Image"),
+                  )),
             ],
           ),
         ),
       ),
     );
   }
+
   Future<void> takePicture() async {
-    RenderRepaintBoundary? boundary = genKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
+    RenderRepaintBoundary? boundary =
+        genKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
     ui.Image image = await boundary!.toImage();
     final directory = (await getApplicationDocumentsDirectory()).path;
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData!.buffer.asUint8List();
-    File imgFile = File('$directory/photo.png');
-    await imgFile.writeAsBytes(pngBytes);
-    print("============================${imgFile.path}");
+
+    await ImageGallerySaver.saveImage(pngBytes, name: "invoice");
   }
+
   Widget Box(String name, String price) {
     return Row(
       children: [
